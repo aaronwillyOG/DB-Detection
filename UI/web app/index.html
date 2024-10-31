@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+
+<div class="dashboard-container">
+    <div class="sidebar">
+        <ul>
+            <li><i class="icon-dashboard"></i> Dashboard</li>
+            <li><i class="icon-logs"></i> Tracker Logs</li>
+            <li><i class="icon-breaches"></i> Data Breaches</li>
+            <li><i class="icon-settings"></i> Settings</li>
+            <li><i class="icon-help"></i> Help</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="summary-section">
+            <h2>Trackers Blocked This Week</h2>
+            <!-- Chart element -->
+            <canvas id="tracker-chart" width="400" height="200"></canvas>
+        </div>
+
+        <div class="breaches-section">
+            <h2>Recent Data Breaches</h2>
+            <table class="breaches-table">
+                <thead>
+                <tr>
+                    <th>Website</th>
+                    <th>Breach Date</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Google.com</td>
+                    <td>01 Oct 2024</td>
+                    <td>Resolved</td>
+                </tr>
+                <tr>
+                    <td>Yahoo.com</td>
+                    <td>01 Oct 2024</td>
+                    <td>Resolved</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="chart.js"></script>
+</body>
+</html>

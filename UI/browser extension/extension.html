@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Alert Extension</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="hacker.css">
+</head>
+<body>
+
+  <div class="popup-container">
+    <div class="header">
+      <img src="main.png" alt="Privacy Tool Logo" class="logo">
+      <div class="status safe">Status: Safe</div>
+      <span class="alert-icon"></span>
+    </div>
+
+    <div class="alerts-section">
+      <div class="alert-card">
+        <h3>Tracking Attempt Detected!</h3>
+        <p>Detected tracking cookie from suspicious-site.com</p>
+        <button class="view-details">View Details</button>
+        <button class="block-domain">Block Domain</button>
+      </div>
+
+      <div class="alert-card">
+        <h3>Data Breach Alert!</h3>
+        <p>Your email was found in a breach on example.com</p>
+        <button class="view-details">View Details</button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <label class="toggle">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+      <button class="settings-btn">Settings</button>
+    </div>
+  </div>
+
+</body>
+</html>
