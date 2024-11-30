@@ -6,8 +6,8 @@
     <title>Privacy Dashboard</title>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
     <link rel="stylesheet" href="style.css">
-    
 </head>
 <body>
 
@@ -25,8 +25,14 @@
     <div class="main-content">
         <div class="summary-section">
             <h2>Trackers Blocked This Week</h2>
-            <!-- Chart element -->
             <canvas id="tracker-chart" width="400" height="200"></canvas>
+        </div>
+
+        <div class="alerts-section">
+            <h2>Real-Time Tracker Alerts</h2>
+            <div id="alert-container">
+                <!-- Real-time alerts will appear here -->
+            </div>
         </div>
 
         <div class="breaches-section">
@@ -57,5 +63,18 @@
 </div>
 
 <script src="chart.js"></script>
+<script>
+    // Connect to Socket.IO
+    const socket = io('http://127.0.0.1:5000');
+
+    // Listen for tracker alerts
+    socket.on('tracker_alert', function(data) {
+        const alertDiv = document.getElementById("alerts");
+        const newAlert = document.createElement("div");
+        newAlert.textContent = data.message;
+        newAlert.style.color = "red"; // Change color for visibility
+        alertDiv.appendChild(newAlert);
+    });
+</script>
 </body>
 </html>
