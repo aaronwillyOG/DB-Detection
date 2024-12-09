@@ -42,3 +42,15 @@ socket.on('tracker_alert', function(data) {
     chart.data.datasets[0].data.push(data.count);
     chart.update();
 });
+
+
+
+
+const hamburger = document.getElementById("hamburger");
+const sidebar = document.getElementById("sidebar");
+const mainContent = document.getElementById("main-content");
+
+hamburger.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+    mainContent.classList.toggle("shift");
+});
