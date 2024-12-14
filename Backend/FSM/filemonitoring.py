@@ -32,5 +32,5 @@ class Handler(FileSystemEventHandler):
         print(f"File moved: {event.src_path}")
 
 if __name__ == '__main__':
-    w = Watcher("/path/to/monitor")
+    w = Watcher("C:/Users/hp/Downloads")
     w.run()

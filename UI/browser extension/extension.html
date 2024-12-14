@@ -13,7 +13,7 @@
     <div class="header">
       <img src="main.png" alt="Privacy Tool Logo" class="logo">
       <div class="status safe">Status: Safe</div>
-      <span class="alert-icon"></span>
+      <span class="alert-icon" id="alert-icon"></span>
     </div>
 
     <div class="alerts-section">
@@ -39,6 +39,20 @@
       <button class="settings-btn">Settings</button>
     </div>
   </div>
-
+  
+  <script>
+    const toggle = document.querySelector('.toggle input[type="checkbox"]');
+    const alertIcon = document.getElementById('alert-icon');
+    
+    toggle.addEventListener('change', function() {
+      if (toggle.checked) {
+        alertIcon.style.backgroundColor = '#33ff33'; // Green when checked
+        alertIcon.style.boxShadow = '0 0 10px #33ff33'; // Green shadow when checked
+      } else {
+        alertIcon.style.backgroundColor = '#ff3333'; // Red when unchecked
+        alertIcon.style.boxShadow = '0 0 10px #ff3333'; // Red shadow when unchecked
+      }
+    });
+  </script>
 </body>
 </html>
