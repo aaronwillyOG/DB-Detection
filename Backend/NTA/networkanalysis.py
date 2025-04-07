@@ -1,16 +1,10 @@
-from flask import Flask, jsonify
 from scapy.all import sniff, IP
 from scapy.layers.http import HTTPRequest
 from scapy.layers.dns import DNS, DNSQR
 from scapy.layers.inet import TCP
-import threading
 
-app = Flask(__name__)
-
-known_trackers = [
-    "google-analytics.com", "doubleclick.net",
-    "facebook.com", "mobile.events.data.microsoft.com"
-]
+'''Tracker Detection'''
+known_trackers = ["google-analytics.com", "doubleclick.net", "facebook.com", "mobile.events.data.microsoft.com"]
 
 def get_sni(packet):
     try:
@@ -21,46 +15,60 @@ def get_sni(packet):
             sni_end = sni_start + sni_length
             sni = raw_data[sni_start:sni_end].decode('utf-8')
             return sni
-    except Exception:
+    except Exception as e:
         pass
     return None
 
-detected_trackers = []
-
 def detect_trackers(packet):
+    # HTTP Tracking Detection
     if packet.haslayer(HTTPRequest):
-        host = packet[HTTPRequest].Host.decode()
+        http_layer = packet.getlayer(HTTPRequest)
+        host = http_layer.Host.decode()
         if any(tracker in host for tracker in known_trackers):
-            detected_trackers.append(host)
             return True
-    if packet.haslayer(DNS) and packet[DNS].qr == 0:
+
+    # DNS Tracking Detection
+    if packet.haslayer(DNS) and packet[DNS].qr == 0:  # DNS query
         dns_query = packet[DNSQR].qname.decode()
         if any(tracker in dns_query for tracker in known_trackers):
-            detected_trackers.append(dns_query)
-            return True
-    if packet.haslayer(TCP) and packet[TCP].dport == 443 and packet.haslayer(IP):
-        sni = get_sni(packet)
-        if sni and any(tracker in sni for tracker in known_trackers):
-            detected_trackers.append(sni)
-            return True
-    return False
+           return True
 
+    # HTTPS Tracking Detection using SNI
+    if packet.haslayer(TCP) and packet[TCP].dport == 443:  # HTTPS traffic on port 443
+        if packet.haslayer(IP):
+            sni = get_sni(packet)
+            if sni and any(tracker in sni for tracker in known_trackers):
+                return True
+
+
+# Function to process each captured packet
 def packet_handler(packet):
-    detect_trackers(packet)
+    if packet.haslayer(HTTPRequest):
+        http_layer = packet.getlayer(HTTPRequest)
+        host = http_layer.Host.decode()
+        tracker = detect_trackers(packet)
+        if tracker:
+            # alert_message = f"Tracking detected: {host}"
+            # socketio.emit('tracker_alert', {'message': alert_message})
+            print(f"Tracking detected: {host}")
 
-def start_sniffing():
-    sniff(filter="tcp port 80 or tcp port 443 or udp port 53", prn=packet_handler, store=False)
+    elif packet.haslayer(DNS) and packet.getlayer(DNS).qr == 0:  # qr == 0 means it's a DNS query
+        dns_layer = packet.getlayer(DNSQR)  # DNS Question Record
+        dns_query = packet[DNSQR].qname.decode()
+        tracker = detect_trackers(packet)
+        if tracker:
+            # alert_message = f"Tracking detected: {dns_query}"
+            # socketio.emit('tracker_alert', {'message': alert_message})
+            print(f"Tracking detected: {dns_query}")
 
-@app.route('/')
-def index():
-    return "Tracker Detection Service Running"
+    elif packet.haslayer(TCP) and packet[TCP].dport == 443:
+        if packet.haslayer(IP):
+            sni = get_sni(packet)
+            tracker = detect_trackers(packet)
+            if tracker:
+                # alert_message = f"Tracking detected: {sni}"
+                # socketio.emit('tracker_alert', {'message': alert_message})
+                print(f"Tracking detected: {sni}")
 
-@app.route('/trackers')
-def trackers():
-    return jsonify({"detected": list(set(detected_trackers))})
 
-if __name__ == '__main__':
-    thread = threading.Thread(target=start_sniffing)
-    thread.daemon = True
-    thread.start()
-    app.run(host='0.0.0.0', port=8080)
+sniff(iface="Wi-Fi", filter="tcp port 80 or tcp port 443 or udp port 53", prn=packet_handler, store=False)
